@@ -1,0 +1,169 @@
+Hier ist der komplette Code als eine HTML-Datei:
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Farm Manager</title>
+<style>
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+    background: linear-gradient(180deg, #dff6df, #f7f1d5);
+    color: #222;
+  }
+  .app {
+    max-width: 430px;
+    margin: auto;
+    padding: 16px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 28px;
+  }
+  .card {
+    background: white;
+    border-radius: 18px;
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  }
+  .money {
+    font-size: 26px;
+    font-weight: bold;
+    text-align: center;
+    color: #1b7f3a;
+  }
+  label {
+    display: block;
+    padding: 12px;
+    margin: 8px 0;
+    background: #f1f1f1;
+    border-radius: 12px;
+    font-size: 17px;
+  }
+  input[type="checkbox"] {
+    transform: scale(1.3);
+    margin-right: 10px;
+  }
+  button {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 16px;
+    font-size: 20px;
+    font-weight: bold;
+    background: #2f9e44;
+    color: white;
+  }
+  button:active {
+    transform: scale(0.98);
+  }
+  .log {
+    font-size: 15px;
+    line-height: 1.4;
+    background: #fafafa;
+    border-radius: 12px;
+    padding: 12px;
+    min-height: 90px;
+  }
+  .small {
+    font-size: 14px;
+    color: #666;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>🌾 Farm Manager</h1>
+  <div class="card">
+    <div class="small">Vermögen</div>
+    <div class="money" id="money">1.000 €</div>
+  </div>
+  <div class="card">
+    <h2>👷 Team auswählen</h2>
+    <label>
+      <input type="checkbox" class="worker" data-name="Power-Team" data-cost="180" data-prod="420">
+      Power-Team 💪<br>
+      <span class="small">Kosten: 180 € | Produktion: hoch</span>
+    </label>
+    <label>
+      <input type="checkbox" class="worker" data-name="Spar-Team" data-cost="90" data-prod="180">
+      Spar-Team 🧰<br>
+      <span class="small">Kosten: 90 € | Produktion: solide</span>
+    </label>
+    <label>
+      <input type="checkbox" class="worker" data-name="Profi-Team" data-cost="240" data-prod="520">
+      Profi-Team ⚙️<br>
+      <span class="small">Kosten: 240 € | Produktion: sehr hoch</span>
+    </label>
+    <label>
+      <input type="checkbox" class="worker" data-name="Flex-Team" data-cost="130" data-prod="260">
+      Flex-Team 🚜<br>
+      <span class="small">Kosten: 130 € | Produktion: mittel</span>
+    </label>
+  </div>
+  <div class="card">
+    <h2>🌱 Material</h2>
+    <p>Saatgut & Material pro Runde: <b>150 €</b></p>
+  </div>
+  <button onclick="produce()">Produktion starten</button>
+  <div class="card">
+    <h2>📋 Ergebnis</h2>
+    <div class="log" id="log">
+      Wähle ein oder mehrere Teams aus und starte die Produktion.
+    </div>
+  </div>
+</div>
+<script>
+let money = 1000;
+let round = 1;
+function formatMoney(value) {
+  return value.toLocaleString("de-DE") + " €";
+}
+function updateMoney() {
+  document.getElementById("money").textContent = formatMoney(money);
+}
+function produce() {
+  const workers = document.querySelectorAll(".worker:checked");
+  const materialCost = 150;
+  if (workers.length === 0) {
+    document.getElementById("log").innerHTML =
+      "⚠️ Bitte wähle zuerst mindestens ein Team aus.";
+    return;
+  }
+  let workerCost = 0;
+  let production = 0;
+  let names = [];
+  workers.forEach(w => {
+    workerCost += Number(w.dataset.cost);
+    production += Number(w.dataset.prod);
+    names.push(w.dataset.name);
+  });
+  const totalCost = workerCost + materialCost;
+  if (money < totalCost) {
+    document.getElementById("log").innerHTML =
+      "❌ Nicht genug Geld für diese Produktion.<br><br>" +
+      "Benötigt: " + formatMoney(totalCost) + "<br>" +
+      "Verfügbar: " + formatMoney(money);
+    return;
+  }
+  const bonus = Math.floor(Math.random() * 120);
+  const revenue = production + bonus;
+  const profit = revenue - totalCost;
+  money += profit;
+  document.getElementById("log").innerHTML =
+    "✅ Runde " + round + " abgeschlossen<br><br>" +
+    "Team: " + names.join(", ") + "<br>" +
+    "Materialkosten: " + formatMoney(materialCost) + "<br>" +
+    "Arbeitskosten: " + formatMoney(workerCost) + "<br>" +
+    "Umsatz: " + formatMoney(revenue) + "<br>" +
+    "Gewinn: " + formatMoney(profit);
+  round++;
+  updateMoney();
+}
+updateMoney();
+</script>
+</body>
+</html>
